@@ -2,12 +2,7 @@
 	<form>
 		<select name="stop">
 			<option>Select departure station</option>
-			<option disabled>--(Red/Gold)--</option>
 			{{#each stops}}
-				<option value="{{name}}" {{selectedStation name}}>{{displayName}}</option>
-			{{/each}}
-			<option disabled>--(Blue/Green)--</option>
-			{{#each stops2}}
 				<option value="{{name}}" {{selectedStation name}}>{{displayName}}</option>
 			{{/each}}
 		</select>

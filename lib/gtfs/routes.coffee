@@ -53,6 +53,7 @@ if Meteor.isServer
   # Return after loading fake data
   return
 
+  # change get URL
   # Re-add all stops from service
   res = HTTP.get 'http://api.navdash.com/routes'
   if res.statusCode isnt 200

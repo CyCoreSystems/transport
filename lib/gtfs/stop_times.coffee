@@ -19,6 +19,7 @@ if Meteor.isServer
     return
   return
 
+  # connection refused at this URL
   # Re-add all data from service
   res = HTTP.get 'http://localhost:1337/api/getstoptime'
   if res.statusCode isnt 200

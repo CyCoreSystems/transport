@@ -142,4 +142,3 @@ stationURLmap =
 	"VINE CITY STATION": "http://itsmarta.com/ew-vin-overview.aspx"
 	"WEST END STATION": "http://itsmarta.com/ns-wes-overview.aspx"
 	"WESTLAKE STATION": "http://itsmarta.com/ew-wes-overview.aspx"
-

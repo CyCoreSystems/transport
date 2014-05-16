@@ -60,6 +60,7 @@ if Meteor.isServer
     return
   return
 
+  # Change HTTP.get url to working url
   # Re-add all data from service
   res = HTTP.get 'http://api.navdash.com/trips'
   if res.statusCode isnt 200
