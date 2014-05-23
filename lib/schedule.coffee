@@ -11,20 +11,29 @@ if Meteor.isServer
 	Meteor.startup ->
 		refreshSchedule color for color in ['RED','GOLD','GREEN','BLUE']
 
+# refresh schedule for red, gold, blue, green.
+# return all corresponding route names
 refreshSchedule = (col) ->
 	console.log 'grabbing routes for '+col
 	routeCursor = Routes.find {route_short_name:col}
 	routeCursor.forEach routeToTrip
 
+# accepting the document from Routes, get collection of trips
+# this is all necessary to weed out the bus schedule data.
+# we now only have the routes for trains.
 routeToTrip = (routeDoc) ->
 	console.log 'grabbing trips for route '+routeDoc["route_id"]
 	tripCursor = Trips.find {route_id:routeDoc["route_id"]}
 	tripCursor.forEach infoFromTrip
 
+#accepting the document from Trips, we can get the stop_times collection.
 infoFromTrip = (tripDoc) ->
 	timeCursor = StopTimes.find {trip_id:tripDoc["trip_id"]}
 	timeCursor.forEach getFullObject
 
+# we can backtrack using the trip_id and stop_id from stop_times 
+# to get all necessary fields, as seen below.
+# only trains are considered, buses were eliminated previously.
 getFullObject = (timeDoc) ->
 	arrivalTime = timeDoc["arrival_time"]
 	stopDoc = Stops.findOne {stop_id:timeDoc["stop_id"]}
@@ -37,6 +46,7 @@ getFullObject = (timeDoc) ->
 	routeDoc = Routes.findOne {route_id:routeID}
 	line = routeDoc["route_short_name"]
 	direction=""
+# switch direction to the same value held in Arrivals
 	switch line
 		when 'GOLD','RED'
 			if direction_id is '0'
