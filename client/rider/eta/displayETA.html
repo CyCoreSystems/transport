@@ -1,4 +1,5 @@
 <template name="displayETA">
+	{{hasNoDirection}}
 	{{#if hasDirection 'N'}}
 		<ul direction="north">
 			{{#if isTerminal}}
