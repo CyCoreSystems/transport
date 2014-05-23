@@ -1,31 +1,69 @@
-@Routes = new Meteor.Collection 'routes'
-@Trips = new Meteor.Collection 'trips'
+@Stops = new Meteor.Collection 'stops'
 @StopTimes = new Meteor.Collection 'stop_times'
+@Trips = new Meteor.Collection 'trips'
+@Routes = new Meteor.Collection 'routes'
+@Calendar = new Meteor.Collection 'calendar'
 @Schedule = new Meteor.Collection 'schedule'
 
-listIDs = []
-tripIDs = []
+times =[]
 
 if Meteor.isServer
 	Meteor.startup ->
-		grabRouteList color for color in ['GOLD','RED','BLUE','GREEN']
-		grabTripList route for route in listIDs
+		refreshSchedule color for color in ['RED','GOLD','GREEN','BLUE']
 
-grabRouteList = (col)->
-	console.log 'grabbing route for '+col
-	trainRoutes = Routes.find({route_short_name:col})
-	trainRoutes.forEach storeList
-	
-grabTripList = (rID)->
-	console.log 'grabbing trips for '+rID
-	trainTrips = Trips.find({route_id:rID})
-	trainTrips.forEach storeList2
+refreshSchedule = (col) ->
+	console.log 'grabbing routes for '+col
+	routeCursor = Routes.find {route_short_name:col}
+	routeCursor.forEach routeToTrip
 
-storeList = (post) ->
-	listIDs.push post["route_id"]
+routeToTrip = (routeDoc) ->
+	console.log 'grabbing trips for route '+routeDoc["route_id"]
+	tripCursor = Trips.find {route_id:routeDoc["route_id"]}
+	tripCursor.forEach infoFromTrip
 
-storeList2 = (tripDocs) ->
-	tripIDs.push tripDocs["trip_id"]
+infoFromTrip = (tripDoc) ->
+	timeCursor = StopTimes.find {trip_id:tripDoc["trip_id"]}
+	timeCursor.forEach getFullObject
+
+getFullObject = (timeDoc) ->
+	arrivalTime = timeDoc["arrival_time"]
+	stopDoc = Stops.findOne {stop_id:timeDoc["stop_id"]}
+	stationName = stopDoc["stop_name"]
+	tripID = timeDoc["trip_id"]
+	tripDoc = Trips.findOne {trip_id:tripID}
+	serviceID = tripDoc["service_id"]
+	direction_id = tripDoc["direction_id"]
+	routeID = tripDoc["route_id"]
+	routeDoc = Routes.findOne {route_id:routeID}
+	line = routeDoc["route_short_name"]
+	direction=""
+	switch line
+		when 'GOLD','RED'
+			if direction_id is '0'
+				direction='N'
+			else
+				direction='S'
+		when 'GREEN','BLUE'
+			if direction_id is '0'
+				direction='E'
+			else
+				direction='W'
+		else
+			direction='U'
+
+	Schedule.update { 
+		arrival_time: arrivalTime
+		stop_name: stationName
+		service_id: serviceID
+		direction: direction
+	},{ 
+		$set:
+			arrival_time: arrivalTime
+			stop_name: stationName
+			service_id: serviceID
+			direction: direction
+			line: line
+	},{ upsert:true }
 
 Meteor.methods {
   getNextScheduled: (agency, stop, line, direction)->
