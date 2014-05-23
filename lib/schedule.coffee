@@ -61,12 +61,12 @@ getFullObject = (timeDoc) ->
 		else
 			direction='U'
 
-	Schedule.update { 
+	Schedule.update {
 		arrival_time: arrivalTime
 		stop_name: stationName
 		service_id: serviceID
 		direction: direction
-	},{ 
+	},{
 		$set:
 			arrival_time: arrivalTime
 			stop_name: stationName
