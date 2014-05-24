@@ -1,4 +1,3 @@
-###
 @Stops = new Meteor.Collection 'stops'
 @StopTimes = new Meteor.Collection 'stop_times'
 @Trips = new Meteor.Collection 'trips'
@@ -36,7 +35,7 @@ infoFromTrip = (tripDoc) ->
 # to get all necessary fields, as seen below.
 # only trains are considered, buses were eliminated previously.
 getFullObject = (timeDoc) ->
-	arrivalTime = timeConvert timeDoc["arrival_time"]
+	arrivalTime = timeDoc["arrival_time"]
 	stopDoc = Stops.findOne {stop_id:timeDoc["stop_id"]}
 	stationName = stopDoc["stop_name"]
 	tripID = timeDoc["trip_id"]
@@ -76,11 +75,11 @@ getFullObject = (timeDoc) ->
 			line: line
 	},{ upsert:true }
 
-# convert to unix time
+### convert to unix time
 timeConvert = (timeVal) ->
 	unixTime = moment(timeVal, 'hh:mm:ss A').unix()
 	return unixTime
-
+###
 Meteor.methods {
   getNextScheduled: (agency, stop, line, direction)->
     check agency,String
@@ -88,4 +87,4 @@ Meteor.methods {
     check line,String
     check direction,String
 }
-###
+
