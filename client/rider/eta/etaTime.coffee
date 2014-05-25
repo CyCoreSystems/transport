@@ -1,4 +1,3 @@
-Schedule = new Meteor.Collection 'schedule'
 etaClock = new Deps.Dependency
 
 Meteor.startup ->

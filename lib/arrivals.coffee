@@ -8,6 +8,8 @@ if Meteor.isServer
 		trainsInterval = Meteor.setInterval updateArrivals,10000
 
 updateArrivals = ->
+	currDay = moment().day()
+	Schedule.find().forEach convertToUnix
 	res = HTTP.get "http://developer.itsmarta.com/RealtimeTrain/RestServiceNextTrain/GetRealtimeArrivals?apikey=#{share.api_key_MARTA}"
 	if res.statusCode isnt 200
 		return console.error "Failed to get train data",res
@@ -35,24 +37,30 @@ updateArrivals = ->
 	Arrivals.remove {
 		next_arr: { $lt: moment().unix() }
 	}
-	console.log Schedule.find( { arrival_time: { $gt: moment().unix() }, service_id: '3'} ).fetch()
-	currDay= moment().day()
 	switch currDay
-		when '1','2','3','4','5' then mergeFields scheduleDoc for scheduleDoc in Schedule.find( { arrival_time: { $gt: moment().unix() }, service_id: '5' } ).fetch()
-		when '6' then mergeFields scheduleDoc for scheduleDoc in Schedule.find( { arrival_time: { $gt: moment().unix() }, service_id: '3' } ).fetch()
-		when '0' then mergeFields scheduleDoc for scheduleDoc in Schedule.find( { arrival_time: { $gt: moment().unix() }, service_id: '4' } ).fetch()
-		
+		when 1,2,3,4,5 then mergeFields scheduleDoc for scheduleDoc in Schedule.find( { unixTime: { $gt: moment().unix() }, service_id: '5' } ).fetch()
+		when 6 then mergeFields scheduleDoc for scheduleDoc in Schedule.find( { unixTime: { $gt: moment().unix() }, service_id: '3' } ).fetch()
+		when 0 then mergeFields scheduleDoc for scheduleDoc in Schedule.find( { unixTime: { $gt: moment().unix() }, service_id: '4' } ).fetch()
+
+convertToUnix = (doc) ->
+	arrival_time = doc["arrival_time"]
+	arrival_time2 = moment(arrival_time, 'H:mm:ss').unix()
+	Schedule.update {
+			_id: doc["_id"]
+	},{
+		$set:
+			unixTime: arrival_time2
+	},{ upsert: true }
 
 mergeFields = (doc) ->
 	station = doc["stop_name"]
-	console.log station
 	arrTime = doc["arrival_time"]
 	direction = doc["direction"]
 	line = doc["line"]
 	waiting_sec = arrTime-moment().unix()
 	waiting_min = arrTime-moment().unix()
 	arrDoc = Arrivals.find( { station: station })
-	if arrDoc.count() is '0'
+	if arrDoc.count() is 0
 		console.log station
 		Arrivals.update {
 			station:station

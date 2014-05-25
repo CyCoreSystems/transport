@@ -1,11 +1,10 @@
+###
 @Stops = new Meteor.Collection 'stops'
 @StopTimes = new Meteor.Collection 'stop_times'
 @Trips = new Meteor.Collection 'trips'
 @Routes = new Meteor.Collection 'routes'
 @Calendar = new Meteor.Collection 'calendar'
 @Schedule = new Meteor.Collection 'schedule'
-
-times =[]
 
 if Meteor.isServer
 	Meteor.startup ->
@@ -75,11 +74,6 @@ getFullObject = (timeDoc) ->
 			line: line
 	},{ upsert:true }
 
-### convert to unix time
-timeConvert = (timeVal) ->
-	unixTime = moment(timeVal, 'hh:mm:ss A').unix()
-	return unixTime
-###
 Meteor.methods {
   getNextScheduled: (agency, stop, line, direction)->
     check agency,String
@@ -87,4 +81,4 @@ Meteor.methods {
     check line,String
     check direction,String
 }
-
+			###
