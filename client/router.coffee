@@ -2,6 +2,10 @@ Router.map ->
   @route 'home',{
     path: '/'
   }
+  @route 'trainWatch',{
+    path: '/trainWatch'
+	 template: 'trainWatch'
+  }
   @route 'govathon',{
     path: '/govathon'
     template: 'govathon'
@@ -16,6 +20,9 @@ Router.map ->
   }
   @route 'eta',{
     path: '/rider/eta'
+  }
+  @route 'track',{
+    path: '/rider/track'
   }
 
 Router.configure {

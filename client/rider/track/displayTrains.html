@@ -1,0 +1,7 @@
+<template name="displayTrains">
+	<ul line="{{cutify}}">
+	{{#each trains}}
+	<li>{{>getInfo this}}</li>
+	{{/each}}
+	</ul>
+</template>
