@@ -59,7 +59,9 @@ getFullObject = (timeDoc) ->
 				direction='W'
 		else
 			direction='U'
-
+# since there is poor coordination between names, sometimes use map...
+	switch stationName
+		when "LINDBERGH CENTER STATION","DOME-GWCC-PHILIPS ARENA-CNN STATION","INMAN PARK-REYNOLDSTOWN STATION" then stationName=nameMap[stationName]
 	Schedule.update {
 		arrival_time: arrivalTime
 		stop_name: stationName
@@ -81,4 +83,9 @@ Meteor.methods {
     check line,String
     check direction,String
 }
+
+nameMap=
+	"LINDBERGH CENTER STATION":"LINDBERGH STATION"
+	"DOME-GWCC-PHILIPS ARENA-CNN STATION":"OMNI DOME STATION"
+	"INMAN PARK-REYNOLDSTOWN STATION":"INMAN PARK STATION"
 			###
