@@ -1,9 +1,13 @@
 etaClock = new Deps.Dependency
+etaClockInterval = undefined
 
-Meteor.startup ->
-  # Start the global etaClock timer
-  setInterval ->
+Template.etaTime.created = ->
+  etaClockInterval = Meteor.setInterval ->
     etaClock.changed()
+  ,1000
+
+Template.etaTime.destroyed = ->
+  Meteor.clearInterval etaClockInterval
 
 Template.etaTime.liveETA = ->
   # Rerun each etaClock cycle

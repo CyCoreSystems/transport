@@ -8,13 +8,5 @@ Template.queryLine.selectLine = (name) ->
 		return "selected"
 	return ""
 
-Template.queryLine.cutify = (color) ->
-	switch (color)
-		when 'RED' then return 'Red'
-		when 'GOLD' then return 'Gold'
-		when 'BLUE' then return 'Blue'
-		when 'GREEN' then return 'Green'
-	return
-
 Template.queryLine.lines = ->
-  return ['RED','GOLD','BLUE','GREEN']
+  return Lines.find()

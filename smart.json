@@ -4,6 +4,7 @@
     "font-awesome": {},
     "moment": {},
     "postgresql": {},
-    "external-file-loader": {}
+    "external-file-loader": {},
+    "underscore-string-latest": {}
   }
 }
