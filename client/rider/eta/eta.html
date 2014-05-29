@@ -1,5 +1,9 @@
 <template name="eta">
 	{{> queryETA}}
 	{{> displayETA}}
-	{{> handleURL}}
+	<p>
+		{{#if stationURL}}
+			<span class="stationURL">Station information <a href="{{stationURL}}">here</a></span>
+		{{/if}}
+	</p>
 </template>
