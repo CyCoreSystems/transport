@@ -23,9 +23,9 @@ Template.displayTrains.getStop1 = (doc)->
 	return doc["stopArray"][0]
 
 Template.displayTrains.getTime1 = (doc) ->
+	liveClock.depend()
 	event_timeArray = doc["event_timeArray"]
 	timeArray = doc["timeArray"]
-	liveClock.depend()
 	offset = moment().unix() - event_timeArray[0]
 	liveETA = timeArray[0] - offset
 	duration = moment.duration(liveETA,"seconds")
@@ -48,10 +48,10 @@ Template.displayTrains.getStop2 = (doc) ->
 		return stopArray[1]
 
 Template.displayTrains.getTime2 = (doc) ->
+	liveClock.depend()
 	event_timeArray = doc["event_timeArray"]
 	timeArray = doc["timeArray"]
 	if timeArray.length > 1
-		liveClock.depend()
 		offset = moment().unix() - event_timeArray[1]
 		liveETA = timeArray[1] - offset
 		duration = moment.duration(liveETA,"seconds")
