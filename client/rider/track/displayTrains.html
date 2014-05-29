@@ -1,7 +1,22 @@
 <template name="displayTrains">
-	<ul line="{{cutify}}">
+	<table width="2000px">
+	<tr>
+		<th>ID|</th>
+		<th>Direction|</th>
+		<th>Next Stop|</th>
+		<th>Time|</th>
+		<th>Following Stop|</th>
+		<th>Time</th>
+	</tr>	
 	{{#each trains}}
-	<li>{{>getInfo this}}</li>
+	<tr>
+		<td>{{getID this}}</td>
+		<td>{{getDirection this}}</td>
+		<td>{{getStop1 this}}</td>
+		<td>{{getTime1 this}}</td>
+		<td>{{getStop2 this}}</td>
+		<td>{{getTime2 this}}</td>
+	</tr>
 	{{/each}}
-	</ul>
+	</table>
 </template>
