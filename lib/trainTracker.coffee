@@ -9,6 +9,7 @@ if Meteor.isServer
 trainIDlist= []
 
 updateTracker = ->
+	#TODO get rid of the hack remove.
 	TrainTracks.remove {}
 	arrivalDocs = Arrivals.find {next_arr: { $gt: moment().unix() } }
 	arrivalDocs.forEach getTrainID
