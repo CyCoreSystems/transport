@@ -1,7 +1,7 @@
 
 //PRESETS
 
-body, div, nav, span, ul, li, a, table, th, td {
+body, div, nav, span, ul, li, a, table {
        margin: 0;
        padding: 0;
 	float: left;
