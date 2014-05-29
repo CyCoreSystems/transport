@@ -3,6 +3,11 @@ Template.queryLine.events {
     Session.set 'trackLine',e.currentTarget.value
 }
 
+Template.queryLine.selectLine = (name) ->
+	if Session.equals 'trackLine',name
+		return "selected"
+	return ""
+
 Template.queryLine.cutify = (color) ->
 	switch (color)
 		when 'RED' then return 'Red'

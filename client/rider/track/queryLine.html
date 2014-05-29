@@ -3,7 +3,7 @@
 		<select name="line">
 			<option>Select line color</option>
 			{{#each lines}}
-			<option value="{{this}}">{{cutify this}}</option>
+			<option value="{{this}}" {{selectLine this}}>{{cutify this}}</option>
 			{{/each}}
 		</select>
 	</form>
