@@ -3,5 +3,5 @@ Template.queryLine.events {
     Session.set 'trackLine',e.currentTarget.value
 }
 
-Template.queryLine.cutify = (color) ->
-  return _.str.capitalize(color)
+Template.queryLine.lines = ->
+  return Lines.find()
