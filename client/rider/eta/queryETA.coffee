@@ -3,9 +3,6 @@ Template.queryETA.events {
     Session.set 'etaStop',e.currentTarget.value
 }
 
-Template.queryETA.stop = ->
-  return Session.get 'etaStop'
-
 Template.queryETA.stops = ->
   return Stations.find({},{ sort: ['displayName'] })
 

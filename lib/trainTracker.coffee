@@ -9,8 +9,6 @@ if Meteor.isServer
 trainIDlist= []
 
 updateTracker = ->
-	#TODO get rid of the hack remove.
-	TrainTracks.remove {}
 	arrivalDocs = Arrivals.find {next_arr: { $gt: moment().unix() } }
 	arrivalDocs.forEach getTrainID
 	createDocument id for id in trainIDlist
@@ -23,28 +21,34 @@ getTrainID = (doc) ->
 		trainIDlist.push train_id
 
 createDocument = (id) ->
-	collection = Arrivals.find { train_id:id},{sort:{next_arr:1}}
-	collection = collection.fetch()
-	i=collection.length
+	collection = Arrivals.find({train_id:id},{sort:{next_arr:1}}).fetch()
 	j=0
-	timeArray = []
-	stopArray = []
-	event_timeArray = []
-	while j<i
-		timeArray.push collection[j]["waiting_seconds"]
-		stopArray.push collection[j]["station"]
-		event_timeArray.push collection[j]["event_time"]
+	while j<collection.length
+		arrival = collection[j]
+		stopObject =
+			station:arrival.station
+			time:arrival.waiting_seconds
+			event_time:arrival.event_time
+		if TrainTracks.find({train_id:id, stopObjects: { $elemMatch: {station:arrival.station}}}).count() is 0
+			TrainTracks.update {
+				train_id:id
+			},{
+				$push:
+					stopObjects:stopObject
+				$set:
+					train_id:id
+					line:arrival.line
+					direction:arrival.direction
+					lastUpdate: moment().unix()
+			},{ upsert: true }
+		else
+			TrainTracks.update {
+				train_id:id
+			},{
+				$set:
+					train_id:id
+					line:arrival.line
+					direction:arrival.direction
+					lastUpdate: moment().unix()
+			},{ upsert: true }
 		j++
-	line = collection[0]["line"]
-	direction = collection[0]["direction"]
-	TrainTracks.update {
-		train_id: id
-	},{
-		$set:
-			event_timeArray: event_timeArray
-			train_id: id
-			timeArray: timeArray
-			stopArray: stopArray
-			direction: direction
-			line: line
-	},{ upsert: true }
