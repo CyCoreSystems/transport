@@ -22,33 +22,20 @@ getTrainID = (doc) ->
 
 createDocument = (id) ->
 	collection = Arrivals.find({train_id:id},{sort:{next_arr:1}}).fetch()
-	j=0
-	while j<collection.length
+	i=0
+	while i<collection.length
 		arrival = collection[j]
 		stopObject =
 			station:arrival.station
 			time:arrival.waiting_seconds
 			event_time:arrival.event_time
-		if TrainTracks.find({train_id:id, stopObjects: { $elemMatch: {station:arrival.station}}}).count() is 0
-			TrainTracks.update {
-				train_id:id
-			},{
-				$push:
-					stopObjects:stopObject
-				$set:
-					train_id:id
-					line:arrival.line
-					direction:arrival.direction
-					lastUpdate: moment().unix()
-			},{ upsert: true }
-		else
-			TrainTracks.update {
-				train_id:id
-			},{
-				$set:
-					train_id:id
-					line:arrival.line
-					direction:arrival.direction
-					lastUpdate: moment().unix()
-			},{ upsert: true }
-		j++
+		dummyObject =
+			stopObject:stopObject
+			line:arrival.line
+			direction:arrival.direction
+			lastUpdate:moment().unix()
+			thisStation:arrival.next_arr
+		updater(dummObject)
+		i++
+
+updater = (newOb) ->
