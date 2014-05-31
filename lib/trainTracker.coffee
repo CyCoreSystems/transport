@@ -6,33 +6,24 @@ if Meteor.isServer
 		updateTracker()
 		trainsInterval = Meteor.setInterval updateTracker,10000
 
-trainIDlist= []
-
 updateTracker = ->
-	arrivalDocs = Arrivals.find {next_arr: { $gt: moment().unix() } }
-	arrivalDocs.forEach getTrainID
-	createDocument id for id in trainIDlist
-	trainIDlist = []
-
-# gets the train IDs, no repeats, so we can create an object for both and upload to own Collection
-getTrainID = (doc) ->
-	train_id = doc["train_id"]
-	if train_id not in trainIDlist
-		trainIDlist.push train_id
+	filterTrainTracks id for id in _.uniq(_.pluck(Arrivals.find().fetch(),'train_id'))
 
 filterTrainTracks = (id) ->
-	tt_collection = TrainTracks.findOne {train_id:id}
-	if not tt_collection
+	tt_doc = TrainTracks.findOne {train_id:id}
+	if not tt_doc
 		createNewTT(id)
-		
+	else
+		updateTT(id)
 
-
+		# If there's no document in TrainTracker, we insert a new one. Easy operation.
+		# The update part is slightly mas dificil.
 createNewTT = (id) ->
 	arrival_collection = Arrivals.find({train_id:id},{sort:{next_arr:1}}).fetch()
 	i = 0
 	stopObArr = []
 	while i<arrival_collection.length
-		arrival = arrival_collection[j]
+		arrival = arrival_collection[i]
 		stopObject =
 			time:arrival.waiting_seconds
 			station:arrival.station
@@ -47,3 +38,8 @@ createNewTT = (id) ->
 		lastUpdate:moment().unix()
 		next_stop:0
 	}
+
+#TODO
+updateTT = (id) ->
+	console.log 'TODO'
+###
