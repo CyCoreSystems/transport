@@ -31,6 +31,9 @@ createNewTT = (id,arr_docs,stopObjects) ->
 
 updateTT = (id,ttStopObjects,newStopObjects) ->
 	i=0
+	newPluck = _.pluck newStopObjects,"station"
+	oldPluck = _.pluck ttStopObjects,"station"
+	setFlagFalse stationName,id for stationName in _.difference oldPluck,newPluck
 	while i<newStopObjects.length
 		newStopObject = newStopObjects[i]
 		thisObject = _.findWhere ttStopObjects,{station:newStopObject["station"]}
@@ -42,6 +45,7 @@ updateTT = (id,ttStopObjects,newStopObjects) ->
 				$set:
 					"stopObjects.$.event_time":newStopObject.event_time
 					"stopObjects.$.time":newStopObject.time
+					"stopObjects.$.arrivedFlag":true
 					lastUpdate: moment().unix()
 			}
 		else
@@ -55,6 +59,15 @@ updateTT = (id,ttStopObjects,newStopObjects) ->
 			}
 		i++
 
+setFlagFalse = (name,id) ->
+			TrainTracks.update {
+				train_id:id
+				"stopObjects.station":name
+			},{
+				$set:
+					"stopObjects.$.arrivedFlag":false
+			}
+
 getArrivalStopObjects = (arr_docs) ->
 	i=0
 	stopObArr = []
@@ -64,6 +77,7 @@ getArrivalStopObjects = (arr_docs) ->
 			time:arrival.waiting_seconds
 			station:arrival.station
 			event_time:arrival.event_time
+			arrivedFlag:true
 		stopObArr.push stopObject
 		i++
 	return stopObArr
