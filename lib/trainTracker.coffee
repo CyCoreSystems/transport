@@ -1,5 +1,7 @@
 @TrainTracks = new Meteor.Collection 'train_tracks'
 
+# when used in a variable, 'tt' means traintracker, some instance of the collection.
+
 if Meteor.isServer
 	trainsInterval = null
 	Meteor.startup ->
@@ -11,35 +13,37 @@ updateTracker = ->
 
 filterTrainTracks = (id) ->
 	tt_doc = TrainTracks.findOne {train_id:id}
+	arr_docs = Arrivals.find({train_id:id},{sort:{next_arr:1}}).fetch()
+	arrivalObjectArray = getArrivalStopObjects arr_docs
 	if not tt_doc
-		createNewTT(id)
+		createNewTT(id,arr_docs,arrivalObjectArray)
 	else
-		updateTT(id)
+		updateTT(tt_doc,arr_docs,arrivalObjectArray)
 
-		# If there's no document in TrainTracker, we insert a new one. Easy operation.
-		# The update part is slightly mas dificil.
-createNewTT = (id) ->
-	arrival_collection = Arrivals.find({train_id:id},{sort:{next_arr:1}}).fetch()
-	i = 0
+createNewTT = (id,arr_docs,stopObjects) ->
+	TrainTracks.insert {
+		train_id: id
+		stopObjects: stopObjects
+		line:arr_docs[0].line
+		direction:arr_docs[0].direction
+		lastUpdate:moment().unix()
+		next_stop:0
+	}
+
+#TODO
+updateTT = (tt_doc,arr_docs,stopObjects) ->
+	console.log 'TODO'
+
+	
+getArrivalStopObjects = (arr_docs) ->
+	i=0
 	stopObArr = []
-	while i<arrival_collection.length
-		arrival = arrival_collection[i]
+	while i<arr_docs.length
+		arrival = arr_docs[i]
 		stopObject =
 			time:arrival.waiting_seconds
 			station:arrival.station
 			event_time:arrival.event_time
 		stopObArr.push stopObject
 		i++
-	TrainTracks.insert {
-		train_id: id
-		stopObjects: stopObArr
-		line:arrival_collection[0].line
-		direction:arrival_collection[0].direction
-		lastUpdate:moment().unix()
-		next_stop:0
-	}
-
-#TODO
-updateTT = (id) ->
-	console.log 'TODO'
-###
+	return stopObArr
