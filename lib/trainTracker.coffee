@@ -21,7 +21,14 @@ filterTrainTracks = (id) ->
 		updateTT(tt_doc,arr_docs,arrivalObjectArray)
 
 createNewTT = (id,arr_docs,stopObjects) ->
+	i=0
+	indexObj = {}
+	while i<arr_docs.length
+		arrival = arr_docs[i]
+		indexObj[arrival.station]=i
+		i++
 	TrainTracks.insert {
+		indexMap:indexObj
 		train_id: id
 		stopObjects: stopObjects
 		line:arr_docs[0].line
@@ -34,7 +41,6 @@ createNewTT = (id,arr_docs,stopObjects) ->
 updateTT = (tt_doc,arr_docs,stopObjects) ->
 	console.log 'TODO'
 
-	
 getArrivalStopObjects = (arr_docs) ->
 	i=0
 	stopObArr = []
