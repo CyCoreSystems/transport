@@ -15,6 +15,7 @@ filterTrainTracks = (id) ->
 	tt_doc = TrainTracks.findOne {train_id:id}
 	arr_docs = Arrivals.find({train_id:id},{sort:{next_arr:1}}).fetch()
 	arrivalObjectArray = getArrivalStopObjects arr_docs
+	TrainTracks.update {}{isRunning:false}
 	if not tt_doc
 		createNewTT(id,arr_docs,arrivalObjectArray)
 	else
@@ -22,6 +23,7 @@ filterTrainTracks = (id) ->
 
 createNewTT = (id,arr_docs,stopObjects) ->
 	TrainTracks.insert {
+		isRunning:true
 		train_id: id
 		stopObjects: stopObjects
 		line:arr_docs[0].line
@@ -45,8 +47,9 @@ updateTT = (id,ttStopObjects,newStopObjects) ->
 				$set:
 					"stopObjects.$.event_time":newStopObject.event_time
 					"stopObjects.$.time":newStopObject.time
-					"stopObjects.$.arrivedFlag":true
+					"stopObjects.$.arrivedFlag":false
 					lastUpdate: moment().unix()
+					isRunning:true
 			}
 		else
 			TrainTracks.update {
@@ -55,6 +58,7 @@ updateTT = (id,ttStopObjects,newStopObjects) ->
 				$push:
 					stopObjects:newStopObject
 				$set:
+					isRunning:true
 					lastUpdate: moment().unix()
 			}
 		i++
@@ -65,7 +69,7 @@ setFlagFalse = (name,id) ->
 				"stopObjects.station":name
 			},{
 				$set:
-					"stopObjects.$.arrivedFlag":false
+					"stopObjects.$.arrivedFlag":true
 			}
 
 getArrivalStopObjects = (arr_docs) ->
@@ -77,7 +81,7 @@ getArrivalStopObjects = (arr_docs) ->
 			time:arrival.waiting_seconds
 			station:arrival.station
 			event_time:arrival.event_time
-			arrivedFlag:true
+			arrivedFlag:false
 		stopObArr.push stopObject
 		i++
 	return stopObArr
