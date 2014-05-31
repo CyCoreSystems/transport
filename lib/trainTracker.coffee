@@ -39,7 +39,22 @@ createNewTT = (id,arr_docs,stopObjects) ->
 	}
 
 updateTT = (tt_doc,arr_docs,new_stopObjects) ->
-
+	next_stop = tt_doc.indexMap[new_stopObjects[0]["station"]]
+	tt_stopObjects = tt_doc.stopObjects
+	tt_indexMap = tt_doc.indexMap
+	lastIndex = tt_indexMap["length"]
+	i=0
+	while i<new_stopObjects.length
+		new_stopObject = new_stopObjects[i]
+		thisIndex = tt_indexMap[new_stopObject["station"]]
+		if thisIndex	# If the station exists in the object, update it!
+			tt_stopObjects[thisIndex]["event_time"]=new_stopObject["event_time"]
+			tt_stopObjects[thisIndex]["time"]=new_stopObject["time"]
+		else #if the station doesn't exist, append it to stopObjects, add to indexMap
+			tt_stopObjects.push new_stopObject
+			tt_indexMap[new_stopObject["station"]]=lastIndex
+			lastIndex++
+		i++
 
 getArrivalStopObjects = (arr_docs) ->
 	i=0
