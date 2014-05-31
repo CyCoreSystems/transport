@@ -39,9 +39,8 @@ createNewTT = (id,arr_docs,stopObjects) ->
 	}
 
 updateTT = (tt_doc,arr_docs,new_stopObjects) ->
-	next_stop = tt_doc.indexMap[new_stopObjects[0]["station"]]
-	tt_stopObjects = tt_doc.stopObjects
-	tt_indexMap = tt_doc.indexMap
+	tt_stopObjects = tt_doc["stopObjects"]
+	tt_indexMap = tt_doc["indexMap"]
 	lastIndex = tt_indexMap["length"]
 	i=0
 	while i<new_stopObjects.length
@@ -55,6 +54,17 @@ updateTT = (tt_doc,arr_docs,new_stopObjects) ->
 			tt_indexMap[new_stopObject["station"]]=lastIndex
 			lastIndex++
 		i++
+	next_stop = tt_indexMap[new_stopObjects[0]["station"]]
+	tt_indexMap["length"]=lastIndex
+	TrainTracks.update {
+		train_id:tt_doc.train_id
+	},{
+		$set:
+			indexMap:tt_indexMap
+			stopObjects:tt_stopObjects
+			next_stop:next_stop
+			lastUpdate:moment().unix()
+	}
 
 getArrivalStopObjects = (arr_docs) ->
 	i=0
