@@ -20,22 +20,30 @@ getTrainID = (doc) ->
 	if train_id not in trainIDlist
 		trainIDlist.push train_id
 
-createDocument = (id) ->
-	collection = Arrivals.find({train_id:id},{sort:{next_arr:1}}).fetch()
-	i=0
-	while i<collection.length
-		arrival = collection[j]
-		stopObject =
-			station:arrival.station
-			time:arrival.waiting_seconds
-			event_time:arrival.event_time
-		dummyObject =
-			stopObject:stopObject
-			line:arrival.line
-			direction:arrival.direction
-			lastUpdate:moment().unix()
-			thisStation:arrival.next_arr
-		updater(dummObject)
-		i++
+filterTrainTracks = (id) ->
+	tt_collection = TrainTracks.findOne {train_id:id}
+	if not tt_collection
+		createNewTT(id)
+		
 
-updater = (newOb) ->
+
+createNewTT = (id) ->
+	arrival_collection = Arrivals.find({train_id:id},{sort:{next_arr:1}}).fetch()
+	i = 0
+	stopObArr = []
+	while i<arrival_collection.length
+		arrival = arrival_collection[j]
+		stopObject =
+			time:arrival.waiting_seconds
+			station:arrival.station
+			event_time:arrival.event_time
+		stopObArr.push stopObject
+		i++
+	TrainTracks.insert {
+		train_id: id
+		stopObjects: stopObArr
+		line:arrival_collection[0].line
+		direction:arrival_collection[0].direction
+		lastUpdate:moment().unix()
+		next_stop:0
+	}
