@@ -15,7 +15,7 @@ filterTrainTracks = (id) ->
 	tt_doc = TrainTracks.findOne {train_id:id}
 	arr_docs = Arrivals.find({train_id:id},{sort:{next_arr:1}}).fetch()
 	arrivalObjectArray = getArrivalStopObjects arr_docs
-	TrainTracks.update {},{isRunning:false}
+	TrainTracks.update({},{$set:{isRunning:false}})
 	if not tt_doc
 		createNewTT(id,arr_docs,arrivalObjectArray)
 	else
