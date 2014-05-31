@@ -37,11 +37,12 @@ updateTT = (id,ttStopObjects,newStopObjects) ->
 		if thisObject
 			TrainTracks.update {
 				train_id:id
-				"stopObjects.station":newStopObject["station"]
+				"stopObjects.station":newStopObject.station
 			},{
 				$set:
-					"stopObjects.$.event_time":newStopObject["event_time"]
-					"stopObjects.$.time":newStopObject["time"]
+					"stopObjects.$.event_time":newStopObject.event_time
+					"stopObjects.$.time":newStopObject.time
+					lastUpdate: moment().unix()
 			}
 		else
 			TrainTracks.update {
@@ -49,13 +50,10 @@ updateTT = (id,ttStopObjects,newStopObjects) ->
 			},{
 				$push:
 					stopObjects:newStopObject
+				$set:
+					lastUpdate: moment().unix()
 			}
 		i++
-	TrainTracks.update {
-		train_id:id
-	},{
-		lastUpdate: moment().unix()
-	}
 
 getArrivalStopObjects = (arr_docs) ->
 	i=0
