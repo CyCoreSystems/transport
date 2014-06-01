@@ -9,13 +9,12 @@ if Meteor.isServer
 		trainsInterval = Meteor.setInterval updateTracker,10000
 
 updateTracker = ->
-	arrivalIDs = _.uniq(_.pluck(Arrivals.find().fetch(),'train_id'))
 
-	fixIsRunningFlag id for id in arrivalIDs
-	filterTrainTracks id for id in arrivalIDs
+	fixIsRunningFlag id for id in _.uniq(_.pluck(TrainTracks.find().fetch(),'train_id'))
+	filterTrainTracks id for id in _.uniq(_.pluck(Arrivals.find().fetch(),'train_id'))
 
 fixIsRunningFlag = (id) ->
-	tt_IDs = _.uniq(_.pluck(TrainTracks.find().fetch(),'train_id'))
+	tt_IDs = _.uniq(_.pluck(Arrivals.find().fetch(),'train_id'))
 	if id in tt_IDs
 		return
 	else
