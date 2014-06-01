@@ -20,26 +20,14 @@ Template.displayTrains.trains = ->
 	return TrainTracks.find { isRunning:true,line:line}
 
 Template.displayTrains.getStop1 = (doc)->
-	#TODO not proud of this. find more elegant solution
-	flagArray = _.pluck doc.stopObjects,'arrivedFlag'
-	i=0
-	while i<flagArray.length
-		if flagArray[i] is false
-			break
-		i++
+	i = getFirstIndex _.pluck(doc.stopObjects,'arrivedFlag')
 	return _.pluck(doc.stopObjects,'station')[i]
 
 Template.displayTrains.getTime1 = (doc) ->
 	liveClock.depend()
 	event_timeArray = _.pluck doc.stopObjects,'event_time'
 	timeArray = _.pluck doc.stopObjects,'time'
-#TODO not proud of this. find more elegant solution
-	flagArray = _.pluck doc.stopObjects,'arrivedFlag'
-	i=0
-	while i<flagArray.length
-		if flagArray[i] is false
-			break
-		i++
+	i = getFirstIndex _.pluck(doc.stopObjects,'arrivedFlag')
 	offset = moment().unix() - event_timeArray[i]
 	liveETA = timeArray[i] - offset
 	duration = moment.duration(liveETA,"seconds")
@@ -56,40 +44,27 @@ Template.displayTrains.getTime1 = (doc) ->
 
 Template.displayTrains.getStop2 = (doc) ->
 	stopArray = _.pluck doc.stopObjects,'station'
-	if stopArray.length <2
-		return "No more stops"
+	if isSecondStop _.pluck(doc.stopObjects,'arrivedFlag')
+		i = getFirstIndex _.pluck(doc.stopObjects,'arrivedFlag')
+		return stopArray[i+1]
 	else
-		#TODO not proud of this. find more elegant solution
-		flagArray = _.pluck doc.stopObjects,'arrivedFlag'
-		i=0
-		while i<flagArray.length
-			if flagArray[i] is false
-				break
-			i++
-		i++
-		return stopArray[i]
+		return "no more stops"
 
 Template.displayTrains.getTime2 = (doc) ->
 	liveClock.depend()
 	event_timeArray = _.pluck doc.stopObjects,'event_time'
 	timeArray = _.pluck doc.stopObjects,'time'
-	if timeArray.length > 1
-		#TODO not proud of this. find more elegant solution
-		flagArray = _.pluck doc.stopObjects,'arrivedFlag'
-		i=0
-		while i<flagArray.length
-			if flagArray[i] is false
-				break
-			i++
-		i++
-		offset = moment().unix() - event_timeArray[i]
-		liveETA = timeArray[i] - offset
+	if isSecondStop _.pluck(doc.stopObjects,'arrivedFlag')
+		i = getFirstIndex _.pluck(doc.stopObjects,'arrivedFlag')
+		offset = moment().unix() - event_timeArray[i+1]
+		liveETA = timeArray[i+1] - offset
 		duration = moment.duration(liveETA,"seconds")
 		if liveETA > 299
 			return "#{Math.floor(duration.asMinutes())} min"
 		# For short times, display seconds
 		secs = duration.seconds()
 		if secs < 0
+			console.log secs,duration.minutes()
 			return "now"
 		if secs < 60
 			if duration.minutes()<1
@@ -97,3 +72,19 @@ Template.displayTrains.getTime2 = (doc) ->
 		return "#{duration.minutes()}m #{secs}s"
 	else
 		return ""
+
+getFirstIndex = (flagArray) ->
+	i=0
+	while i<flagArray.length
+		if flagArray[i] is false
+			return i
+		i++
+
+isSecondStop = (flagArray) ->
+	i=0
+	count = 0
+	while i<flagArray.length
+		if flagArray[i] is false
+			count++
+		i++
+	return count > 1
