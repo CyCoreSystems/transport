@@ -9,13 +9,22 @@ if Meteor.isServer
 		trainsInterval = Meteor.setInterval updateTracker,10000
 
 updateTracker = ->
-	filterTrainTracks id for id in _.uniq(_.pluck(Arrivals.find().fetch(),'train_id'))
+	arrivalIDs = _.uniq(_.pluck(Arrivals.find().fetch(),'train_id'))
+
+	fixIsRunningFlag id for id in arrivalIDs
+	filterTrainTracks id for id in arrivalIDs
+
+fixIsRunningFlag = (id) ->
+	tt_IDs = _.uniq(_.pluck(TrainTracks.find().fetch(),'train_id'))
+	if id in tt_IDs
+		return
+	else
+		TrainTracks.update({train_id:id},{$set:{isRunning:false}},{multi:true})
 
 filterTrainTracks = (id) ->
 	tt_doc = TrainTracks.findOne {train_id:id}
 	arr_docs = Arrivals.find({train_id:id},{sort:{next_arr:1}}).fetch()
 	arrivalObjectArray = getArrivalStopObjects arr_docs
-	TrainTracks.update({},{$set:{isRunning:false}})
 	if not tt_doc
 		createNewTT(id,arr_docs,arrivalObjectArray)
 	else

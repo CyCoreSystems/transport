@@ -35,7 +35,7 @@ Template.displayTrains.getTime1 = (doc) ->
 		return "#{Math.floor(duration.asMinutes())} min"
 	# For short times, display seconds
 	secs = duration.seconds()
-	if secs < 0
+	if secs <0
 		return "now"
 	if secs < 60
 		if duration.minutes()<1
@@ -63,9 +63,6 @@ Template.displayTrains.getTime2 = (doc) ->
 			return "#{Math.floor(duration.asMinutes())} min"
 		# For short times, display seconds
 		secs = duration.seconds()
-		if secs < 0
-			console.log secs,duration.minutes()
-			return "now"
 		if secs < 60
 			if duration.minutes()<1
 				return "#{secs}s"
