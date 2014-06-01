@@ -17,17 +17,31 @@ Template.displayTrains.getDirection = (doc)->
 
 Template.displayTrains.trains = ->
 	line = Session.get 'trackLine'
-	return TrainTracks.find { line:line}
+	return TrainTracks.find { isRunning:true,line:line}
 
 Template.displayTrains.getStop1 = (doc)->
-	return doc["stopArray"][0]
+	#TODO not proud of this. find more elegant solution
+	flagArray = _.pluck doc.stopObjects,'arrivedFlag'
+	i=0
+	while i<flagArray.length
+		if flagArray[i] is false
+			break
+		i++
+	return _.pluck(doc.stopObjects,'station')[i]
 
 Template.displayTrains.getTime1 = (doc) ->
 	liveClock.depend()
-	event_timeArray = doc["event_timeArray"]
-	timeArray = doc["timeArray"]
-	offset = moment().unix() - event_timeArray[0]
-	liveETA = timeArray[0] - offset
+	event_timeArray = _.pluck doc.stopObjects,'event_time'
+	timeArray = _.pluck doc.stopObjects,'time'
+#TODO not proud of this. find more elegant solution
+	flagArray = _.pluck doc.stopObjects,'arrivedFlag'
+	i=0
+	while i<flagArray.length
+		if flagArray[i] is false
+			break
+		i++
+	offset = moment().unix() - event_timeArray[i]
+	liveETA = timeArray[i] - offset
 	duration = moment.duration(liveETA,"seconds")
 	if liveETA > 299
 		return "#{Math.floor(duration.asMinutes())} min"
@@ -41,19 +55,35 @@ Template.displayTrains.getTime1 = (doc) ->
 	return "#{duration.minutes()}m #{secs}s"
 
 Template.displayTrains.getStop2 = (doc) ->
-	stopArray = doc["stopArray"]
+	stopArray = _.pluck doc.stopObjects,'station'
 	if stopArray.length <2
 		return "No more stops"
 	else
-		return stopArray[1]
+		#TODO not proud of this. find more elegant solution
+		flagArray = _.pluck doc.stopObjects,'arrivedFlag'
+		i=0
+		while i<flagArray.length
+			if flagArray[i] is false
+				break
+			i++
+		i++
+		return stopArray[i]
 
 Template.displayTrains.getTime2 = (doc) ->
 	liveClock.depend()
-	event_timeArray = doc["event_timeArray"]
-	timeArray = doc["timeArray"]
+	event_timeArray = _.pluck doc.stopObjects,'event_time'
+	timeArray = _.pluck doc.stopObjects,'time'
 	if timeArray.length > 1
-		offset = moment().unix() - event_timeArray[1]
-		liveETA = timeArray[1] - offset
+		#TODO not proud of this. find more elegant solution
+		flagArray = _.pluck doc.stopObjects,'arrivedFlag'
+		i=0
+		while i<flagArray.length
+			if flagArray[i] is false
+				break
+			i++
+		i++
+		offset = moment().unix() - event_timeArray[i]
+		liveETA = timeArray[i] - offset
 		duration = moment.duration(liveETA,"seconds")
 		if liveETA > 299
 			return "#{Math.floor(duration.asMinutes())} min"
