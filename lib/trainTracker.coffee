@@ -81,6 +81,7 @@ setFlagFalse = (name,id) ->
 					"stopObjects.$.arrivedFlag":true
 			}
 
+#TODO get more human readable hours/seconds
 getArrivalStopObjects = (arr_docs) ->
 	i=0
 	stopObArr = []
