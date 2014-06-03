@@ -4,8 +4,10 @@ Meteor.startup ->
 	setInterval ->
 		liveClock.changed()
 
-Template.displayTrains.getID = (doc) ->
-	return doc["train_id"]
+Template.displayTrains.events {
+	'click td[id=broadID]' : (e,template) ->
+		console.log e.currentTarget.value
+}
 
 Template.displayTrains.getDirection = (doc)->
 	dir = doc["direction"]

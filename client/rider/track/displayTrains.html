@@ -10,7 +10,7 @@
 	</tr>	
 	{{#each trains}}
 	<tr>
-		<td>{{getID this}}</td>
+		<td id="broadID"><a data-value="hi">{{train_id}}</a></td>
 		<td>{{getDirection this}}</td>
 		<td>{{getStop this 0}}</td>
 		<td>{{getTime this 0}}</td>
