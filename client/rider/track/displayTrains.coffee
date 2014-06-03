@@ -10,6 +10,7 @@ Template.displayTrains.events {
 			Session.set 'ttID',null
 		else
 			Session.set 'ttID',this.train_id
+		console.log Session.get 'ttID'
 }
 
 Template.displayTrains.getDirection = (doc)->
