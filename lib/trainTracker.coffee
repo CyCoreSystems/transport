@@ -53,6 +53,7 @@ updateTT = (id,ttStopObjects,newStopObjects) ->
 				"stopObjects.station":newStopObject.station
 			},{
 				$set:
+					"stopObjects.$.event_time":newStopObject.actualArrival
 					"stopObjects.$.event_time":newStopObject.event_time
 					"stopObjects.$.time":newStopObject.time
 					"stopObjects.$.arrivedFlag":false
@@ -90,6 +91,7 @@ getArrivalStopObjects = (arr_docs) ->
 			station:arrival.station
 			event_time:arrival.event_time
 			arrivedFlag:false
+			actualArrival:arrival.waiting_seconds+moment().unix()
 		stopObArr.push stopObject
 		i++
 	return stopObArr
