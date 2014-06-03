@@ -1,0 +1,17 @@
+<template name="extraTable">
+	{{#if ttIDSet}}
+		<h3>Train {{getID}} extended information</h3>
+		<table>
+			<tr>
+				<th>Station</th>
+				<th>Arrival Time</th>
+			</tr>
+			{{#each train}}
+			<tr>
+				<td>{{station}}</td>
+				<td>{{actualArrival}}</td>
+			</tr>
+			{{/each}}
+		</table>
+	{{/if}}
+</template>
