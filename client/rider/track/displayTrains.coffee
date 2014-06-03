@@ -6,7 +6,7 @@ Meteor.startup ->
 
 Template.displayTrains.events {
 	'click td[trainid=broadID]' : (e,template) ->
-		if this.train_id is Session.get 'ttID'
+		if Session.equals 'ttID',this.train_id
 			Session.set 'ttID',null
 		else
 			Session.set 'ttID',this.train_id
