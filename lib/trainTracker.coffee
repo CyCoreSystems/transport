@@ -53,7 +53,7 @@ updateTT = (id,ttStopObjects,newStopObjects) ->
 				"stopObjects.station":newStopObject.station
 			},{
 				$set:
-					"stopObjects.$.event_time":newStopObject.actualArrival
+					"stopObjects.$.actualArrival":newStopObject.actualArrival
 					"stopObjects.$.event_time":newStopObject.event_time
 					"stopObjects.$.time":newStopObject.time
 					"stopObjects.$.arrivedFlag":false
@@ -81,7 +81,6 @@ setFlagFalse = (name,id) ->
 					"stopObjects.$.arrivedFlag":true
 			}
 
-#TODO get more human readable hours/seconds
 getArrivalStopObjects = (arr_docs) ->
 	i=0
 	stopObArr = []
@@ -96,6 +95,7 @@ getArrivalStopObjects = (arr_docs) ->
 			event_time:arrival.event_time
 			arrivedFlag:false
 			actualArrival:actualArrival
+			dayRunning:moment().format 'e'
 		stopObArr.push stopObject
 		i++
 	return stopObArr
