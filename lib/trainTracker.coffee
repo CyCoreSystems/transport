@@ -89,15 +89,13 @@ getArrivalStopObjects = (arr_docs) ->
 		arrival = arr_docs[i]
 		arrivalTime = (+arrival.waiting_seconds+moment().unix())
 		arrivalTime = moment arrivalTime, 'X'
-		hours = arrivalTime.get 'hour'
-		minutes = arrivalTime.get 'minute'
-		seconds = arrivalTime.get 'second'
+		actualArrival = arrivalTime.format 'h:mm:ss a'
 		stopObject =
 			time:arrival.waiting_seconds
 			station:arrival.station
 			event_time:arrival.event_time
 			arrivedFlag:false
-			actualArrival:hours+':'+minutes+':'+seconds
+			actualArrival:actualArrival
 		stopObArr.push stopObject
 		i++
 	return stopObArr

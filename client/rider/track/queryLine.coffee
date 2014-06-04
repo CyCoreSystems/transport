@@ -1,6 +1,7 @@
 Template.queryLine.events {
   'change select[name=line]': (e,template)->
     Session.set 'trackLine',e.currentTarget.value
+    Session.set 'ttID',null
 }
 
 Template.queryLine.selectLine = (name) ->

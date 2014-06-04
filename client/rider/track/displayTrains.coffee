@@ -45,7 +45,7 @@ Template.displayTrains.getTime = (doc, index) ->
 	else
 		offset = moment().unix() - event_timeArray[i+1]
 		liveETA = timeArray[i+1] - offset
-	if isSecondStop _.pluck(doc.stopObjects,'arrivedFlag') or index is 0
+	if index is 0 or isSecondStop _.pluck(doc.stopObjects,'arrivedFlag')
 		duration = moment.duration(liveETA,"seconds")
 		if liveETA > 299
 			return "#{Math.floor(duration.asMinutes())} min"

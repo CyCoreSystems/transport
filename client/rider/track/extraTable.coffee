@@ -1,3 +1,6 @@
+Meteor.startup ->
+	Session.setDefault 'ttID',null
+
 Template.extraTable.ttIDSet = ->
 	if Session.equals 'ttID',null
 		return false
