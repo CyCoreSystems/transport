@@ -1,3 +1,4 @@
+#TODO make sure the stopObjects have been properly ORDERED
 @TrainTracks = new Meteor.Collection 'train_tracks'
 
 # when used in a variable, 'tt' means traintracker, some instance of the collection.
