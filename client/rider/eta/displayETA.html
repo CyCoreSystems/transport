@@ -6,7 +6,11 @@
 			{{else}}
 			<li>Northbound</li>
 			{{/if}}
-		{{#each arrivals 'N'}}
+		{{#each realtimes 'N'}}
+			<li>{{>etaTime this}}</li>
+		{{/each}}
+		<li>Scheduled Times</li>
+		{{#each schedules 'N'}}
 			<li>{{>etaTime this}}</li>
 		{{/each}}
 		</ul>
@@ -19,8 +23,12 @@
 			{{else}}
 			<li>Southbound</li>
 			{{/if}}
-		{{#each arrivals 'S'}}
+		{{#each realtimes 'S'}}
 			<li>{{> etaTime this}}</li>
+		{{/each}}
+		<li>Scheduled Times</li>
+		{{#each schedules 'S'}}
+			<li>{{>etaTime this}}</li>
 		{{/each}}
 		</ul>
 	{{/if}}
@@ -32,8 +40,12 @@
 			{{else}}
 			<li>Westbound</li>
 			{{/if}}
-		{{#each arrivals 'W'}}
+		{{#each realtimes 'W'}}
 			<li>{{> etaTime this}}</li>
+		{{/each}}
+		<li>Scheduled Times</li>
+		{{#each schedules 'W'}}
+			<li>{{>etaTime this}}</li>
 		{{/each}}
 		</ul>
 	{{/if}}
@@ -45,8 +57,12 @@
 			{{else}}
 			<li>Eastbound</li>
 			{{/if}}
-		{{#each arrivals 'E'}}
+		{{#each realtimes 'E'}}
 			<li>{{> etaTime this}}</li>
+		{{/each}}
+		<li>Scheduled Times</li>
+		{{#each schedules 'E'}}
+			<li>{{>etaTime this}}</li>
 		{{/each}}
 		</ul>
 	{{/if}}

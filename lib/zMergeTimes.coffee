@@ -14,6 +14,9 @@ updateList = ->
 	console.log 'loading realtime data'
 	loadRealData doc for doc in Arrivals.find().fetch()
 	console.log (Arrivals.find().count()+' loaded')
+	MergedTimes.remove {
+		next_arr: { $lt: moment().unix() }
+	}
 
 loadScheduleData = (doc) ->
 	event_time = moment().unix()
@@ -23,6 +26,7 @@ loadScheduleData = (doc) ->
 	station = doc.stop_name
 	direction = doc.direction
 	service_id = doc.service_id
+	next_arr = moment(schedule_time, 'H:mm:ss').unix()
 	MergedTimes.update {
 		station:station
 		line:line
@@ -31,6 +35,7 @@ loadScheduleData = (doc) ->
 		service_id:service_id
 	},{
 		$set:
+			next_arr:next_arr
 			station:station
 			line:line
 			direction:direction
@@ -48,11 +53,13 @@ loadRealData = (doc) ->
 	direction = doc.direction
 	waiting_seconds = doc.waiting_seconds
 	event_time = doc.event_time
+	next_arr = doc.next_arr
 	MergedTimes.update {
 		station:station
 		train_id:train_id
 	},{
 		$set:
+			next_arr:next_arr
 			train_id:train_id
 			station:station
 			line:line

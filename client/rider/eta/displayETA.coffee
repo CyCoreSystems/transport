@@ -1,8 +1,14 @@
-Template.displayETA.arrivals = (direction)->
+Template.displayETA.realtimes = (direction)->
   stop = Session.get 'etaStop'
   if not stop
     return
-  return Arrivals.find({ station: stop, direction: direction },{ sort: ['next_arr'] })
+  return MergedTimes.find({ station: stop, direction: direction, dataSource:"realtime" },{ sort: ['next_arr'],limit:5 })
+
+Template.displayETA.schedules = (direction)->
+  stop = Session.get 'etaStop'
+  if not stop
+    return
+  return MergedTimes.find({ station: stop, direction: direction, dataSource:"schedule" },{ sort: ['next_arr'],limit:5 })
 
 Template.displayETA.hasDirection = (direction)->
   stop = Session.get 'etaStop'
