@@ -21,7 +21,7 @@ loadScheduleData = (doc) ->
 	waiting_seconds = moment(doc.arrival_time,'H:mm:ss').unix()-event_time
 	next_arr = moment(doc.arrival_time, 'H:mm:ss').unix()
 	if next_arr > moment().unix()
-		if MergedTimes.find({direction:doc.direction,service_id:doc.service_id,station:doc.stop_name}.count()<5
+		if MergedTimes.find({direction:doc.direction,service_id:doc.service_id,station:doc.stop_name}).count()<5
 			MergedTimes.update {
 				station:doc.stop_name
 				line:doc.line
