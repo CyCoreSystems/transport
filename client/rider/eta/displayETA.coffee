@@ -8,13 +8,13 @@ Template.displayETA.schedules = (direction)->
   stop = Session.get 'etaStop'
   if not stop
     return
-  return MergedTimes.find({ station: stop, direction: direction, dataSource:"schedule" },{ sort: ['next_arr'], limit:3})
+  return MergedTimes.find({ station: stop, direction: direction, dataSource:"schedule", service_id:'5' },{ sort: ['next_arr']})
 
 Template.displayETA.hasDirection = (direction)->
   stop = Session.get 'etaStop'
   if not stop
     return false
-  return Arrivals.find({ station: stop, direction: direction }).count()
+  return MergedTimes.find({ station: stop, direction: direction}).count()
 
 # FIXME:  cruel, brutal, insolent HACK for terminal stations
 Template.displayETA.isTerminal = ->

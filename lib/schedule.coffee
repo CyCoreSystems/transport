@@ -4,7 +4,6 @@
 @Trips = new Meteor.Collection 'trips'
 @Routes = new Meteor.Collection 'routes'
 @Calendar = new Meteor.Collection 'calendar'
-@Schedule = new Meteor.Collection 'schedule'
 
 if Meteor.isServer
 	Meteor.startup ->
@@ -88,4 +87,6 @@ nameMap=
 	"LINDBERGH CENTER STATION":"LINDBERGH STATION"
 	"DOME-GWCC-PHILIPS ARENA-CNN STATION":"OMNI DOME STATION"
 	"INMAN PARK-REYNOLDSTOWN STATION":"INMAN PARK STATION"
+	"HAMILTON E HOLMES STATION":"HIGHTOWER STATION"
+	"WEST LAKE STATION":"WESTLAKE STATION"
 			###

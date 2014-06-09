@@ -7,11 +7,11 @@
 			<li>Northbound</li>
 			{{/if}}
 		{{#each realtimes 'N'}}
-			<li>{{>etaTime this}}</li>
+			<li>{{> etaTime this}}</li>
 		{{/each}}
 		<li>Scheduled Times</li>
 		{{#each schedules 'N'}}
-			<li>{{>etaTime this}}</li>
+			<li>{{> etaTime this}}</li>
 		{{/each}}
 		</ul>
 	{{/if}}
@@ -28,7 +28,7 @@
 		{{/each}}
 		<li>Scheduled Times</li>
 		{{#each schedules 'S'}}
-			<li>{{>etaTime this}}</li>
+			<li>{{> etaTime this}}</li>
 		{{/each}}
 		</ul>
 	{{/if}}
@@ -45,7 +45,7 @@
 		{{/each}}
 		<li>Scheduled Times</li>
 		{{#each schedules 'W'}}
-			<li>{{>etaTime this}}</li>
+			<li>{{> etaTime this}}</li>
 		{{/each}}
 		</ul>
 	{{/if}}
@@ -62,7 +62,7 @@
 		{{/each}}
 		<li>Scheduled Times</li>
 		{{#each schedules 'E'}}
-			<li>{{>etaTime this}}</li>
+			<li>{{> etaTime this}}</li>
 		{{/each}}
 		</ul>
 	{{/if}}
