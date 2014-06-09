@@ -20,26 +20,26 @@ loadScheduleData = (doc) ->
 	event_time = moment().unix()
 	waiting_seconds = moment(doc.arrival_time,'H:mm:ss').unix()-event_time
 	next_arr = moment(doc.arrival_time, 'H:mm:ss').unix()
-	if next_arr > moment().unix()
-		if MergedTimes.find({direction:doc.direction,service_id:doc.service_id,station:doc.stop_name}).count()<5
-			MergedTimes.update {
+	if next_arr > moment().unix() and next_arr < moment().unix() + 1200
+		MergedTimes.update {
+			dataSource:'schedule'
+			schedule_time:doc.arrival_time
+			line:doc.line
+			direction:doc.direction
+			station:doc.stop_name
+			service_id:doc.service_id
+		},{
+			$set:
+				next_arr:next_arr
 				station:doc.stop_name
 				line:doc.line
-				schedule_time:doc.arrival_time
 				direction:doc.direction
+				schedule_time:doc.arrival_time
+				waiting_seconds:waiting_seconds
+				event_time:event_time
 				service_id:doc.service_id
-			},{
-				$set:
-					next_arr:next_arr
-					station:doc.stop_name
-					line:doc.line
-					direction:doc.direction
-					schedule_time:doc.arrival_time
-					waiting_seconds:waiting_seconds
-					event_time:event_time
-					service_id:doc.service_id
-					dataSource:"schedule"
-			},{ upsert:true }
+				dataSource:"schedule"
+		},{ upsert:true }
 
 loadRealData = (doc) ->
 	if doc.next_arr > moment().unix()
