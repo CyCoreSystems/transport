@@ -1,8 +1,4 @@
-Template.maps.createMap = ->
-	window.onload = Meteor.Loader.loadJs "https://maps.googleapis.com/maps/api/js?key=AIzaSyDAVGnGDx8N0e7HrijuJokmxO5R908oc-M",startMap
-	
-startMap = ->
-	console.log 'map loaded'
+key='AIzaSyDAVGnGDx8N0e7HrijuJokmxO5R908oc-M'
 
 initialize = ->
 	mapOptions =
