@@ -1,13 +1,15 @@
-###
 @Stops = new Meteor.Collection 'stops'
 @StopTimes = new Meteor.Collection 'stop_times'
 @Trips = new Meteor.Collection 'trips'
 @Routes = new Meteor.Collection 'routes'
 @Calendar = new Meteor.Collection 'calendar'
+@Schedule = new Meteor.Collection 'schedule'
+#random comment
 
 if Meteor.isServer
-	Meteor.startup ->
-		refreshSchedule color for color in ['RED','GOLD','GREEN','BLUE']
+	if Schedule.find().count() isnt 2537
+		Meteor.startup ->
+			refreshSchedule color for color in ['RED','GOLD','GREEN','BLUE']
 
 # refresh schedule for red, gold, blue, green.
 # return all corresponding route names
@@ -20,29 +22,29 @@ refreshSchedule = (col) ->
 # this is all necessary to weed out the bus schedule data.
 # we now only have the routes for trains.
 routeToTrip = (routeDoc) ->
-	console.log 'grabbing trips for route '+routeDoc["route_id"]
-	tripCursor = Trips.find {route_id:routeDoc["route_id"]}
+	console.log 'grabbing trips for route '+routeDoc.route_id
+	tripCursor = Trips.find {route_id:routeDoc.route_id}
 	tripCursor.forEach infoFromTrip
 
 #accepting the document from Trips, we can get the stop_times collection.
 infoFromTrip = (tripDoc) ->
-	timeCursor = StopTimes.find {trip_id:tripDoc["trip_id"]}
+	timeCursor = StopTimes.find {trip_id:tripDoc.trip_id}
 	timeCursor.forEach getFullObject
 
 # we can backtrack using the trip_id and stop_id from stop_times 
 # to get all necessary fields, as seen below.
 # only trains are considered, buses were eliminated previously.
 getFullObject = (timeDoc) ->
-	arrivalTime = timeDoc["arrival_time"]
-	stopDoc = Stops.findOne {stop_id:timeDoc["stop_id"]}
-	stationName = stopDoc["stop_name"]
-	tripID = timeDoc["trip_id"]
+	arrivalTime = timeDoc.arrival_time
+	stopDoc = Stops.findOne {stop_id:timeDoc.stop_id}
+	stationName = stopDoc.stop_name
+	tripID = timeDoc.trip_id
 	tripDoc = Trips.findOne {trip_id:tripID}
-	serviceID = tripDoc["service_id"]
-	direction_id = tripDoc["direction_id"]
-	routeID = tripDoc["route_id"]
+	serviceID = tripDoc.service_id
+	direction_id = tripDoc.direction_id
+	routeID = tripDoc.route_id
 	routeDoc = Routes.findOne {route_id:routeID}
-	line = routeDoc["route_short_name"]
+	line = routeDoc.route_short_name
 	direction=""
 # switch direction to the same value held in Arrivals
 	switch line
@@ -61,6 +63,8 @@ getFullObject = (timeDoc) ->
 # since there is poor coordination between names, sometimes use map...
 	switch stationName
 		when "LINDBERGH CENTER STATION","DOME-GWCC-PHILIPS ARENA-CNN STATION","INMAN PARK-REYNOLDSTOWN STATION" then stationName=nameMap[stationName]
+# for uploading Shapes data, each schedule has a shape_id. We don't need the whole list of lon/lat coordinates, so the _id suffices. Client will sift through shapes collection.
+	shapeID = tripDoc.shape_id
 	Schedule.update {
 		arrival_time: arrivalTime
 		stop_name: stationName
@@ -73,6 +77,7 @@ getFullObject = (timeDoc) ->
 			service_id: serviceID
 			direction: direction
 			line: line
+			shape_id: shapeID
 	},{ upsert:true }
 
 Meteor.methods {
@@ -89,4 +94,3 @@ nameMap=
 	"INMAN PARK-REYNOLDSTOWN STATION":"INMAN PARK STATION"
 	"HAMILTON E HOLMES STATION":"HIGHTOWER STATION"
 	"WEST LAKE STATION":"WESTLAKE STATION"
-			###

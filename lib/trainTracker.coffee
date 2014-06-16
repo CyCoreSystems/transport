@@ -10,7 +10,6 @@ if Meteor.isServer
 		trainsInterval = Meteor.setInterval updateTracker,10000
 
 updateTracker = ->
-
 	fixIsRunningFlag id for id in _.uniq(_.pluck(TrainTracks.find().fetch(),'train_id'))
 	filterTrainTracks id for id in _.uniq(_.pluck(Arrivals.find().fetch(),'train_id'))
 

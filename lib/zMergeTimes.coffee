@@ -1,4 +1,3 @@
-@Schedule = new Meteor.Collection 'schedule'
 @MergedTimes = new Meteor.Collection 'merged_times'
 
 if Meteor.isServer

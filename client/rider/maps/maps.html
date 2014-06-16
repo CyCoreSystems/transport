@@ -1,3 +1,14 @@
 <template name="maps">
-<div style="width: 200px; height:200px" id='map-canvas'></div>
+	<form>
+		<select name="line">
+			<option>Select line color</option>
+			{{#each lines}}
+			<option value="{{feedName}}" {{selectLine feedName}}>{{humanName}}</option>
+			{{/each}}
+		</select>
+	</form>
+	<div style="width: 900px; height:500px" id='map-canvas'></div>
+	{{#each lineChosen}}
+	{{drawRoute this}}
+	{{/each}}
 </template>
