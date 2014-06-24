@@ -4,7 +4,6 @@
 @Routes = new Meteor.Collection 'routes'
 @Calendar = new Meteor.Collection 'calendar'
 @Schedule = new Meteor.Collection 'schedule'
-#random comment
 
 if Meteor.isServer
 	if Schedule.find().count() isnt 2537
