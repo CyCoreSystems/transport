@@ -12,7 +12,6 @@ Template.etaTime.liveETA = ->
   offset = moment().unix() - @event_time
   # Subtract the offset from the data's ETA
   liveETA = @waiting_seconds - offset
-  console.log "LiveETA:",liveETA
   duration = moment.duration(liveETA,"seconds")
   if liveETA > 299
     return "#{Math.floor(duration.asMinutes())} min"
