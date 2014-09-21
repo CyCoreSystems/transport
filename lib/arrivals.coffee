@@ -7,17 +7,14 @@ if Meteor.isServer
     trainsInterval = Meteor.setInterval updateArrivals,10000
 
 updateArrivals = ->
-  console.log "Updating arrivals"
   res = HTTP.get "http://developer.itsmarta.com/RealtimeTrain/RestServiceNextTrain/GetRealtimeArrivals?apikey=#{share.api_key_MARTA}"
   if res.statusCode isnt 200
     return console.error "Failed to get train data",res
   if not _.isArray res.data
     return console.error "Got invalid train data",res
-  console.log "Update contains #{res.data.length} arrivals"
   _.each res.data,(i)->
-    event_time = moment(i.EVENT_TIME).unix()
-    next_arr = moment(i.NEXT_ARR,'hh:mm:ss A').unix()
-    console.log("Next arrival time processed as:",next_arr)
+    event_time = moment.tz(i.EVENT_TIME,"America/New_York").unix()
+    next_arr = moment.tz(i.NEXT_ARR,'hh:mm:ss A',"America/New_York").unix()
     Arrivals.update {
       train_id: i.TRAIN_ID
       station: i.STATION
@@ -34,6 +31,6 @@ updateArrivals = ->
         waiting_time: i.WAITING_TIME
     },{ upsert: true }
   # Empty out old data
-  #Arrivals.remove {
-  #  next_arr: { $lt: moment().unix() }
-  #}
+  Arrivals.remove {
+    next_arr: { $lt: moment().unix() }
+  }
