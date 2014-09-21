@@ -15,6 +15,7 @@ updateArrivals = ->
   _.each res.data,(i)->
     event_time = moment.tz(i.EVENT_TIME,"America/New_York").unix()
     next_arr = moment.tz(i.NEXT_ARR,'hh:mm:ss A',"America/New_York").unix()
+    console.log("This arrival is at:",next_arr,"compared to now:",moment().unix())
     Arrivals.update {
       train_id: i.TRAIN_ID
       station: i.STATION
