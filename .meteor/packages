@@ -6,7 +6,6 @@
 standard-app-packages
 autopublish
 insecure
-cmather:iron-router@0.7.1
 coffeescript
 less
 natestrauser:font-awesome@4.1.0
@@ -15,3 +14,5 @@ http
 mrt:moment@2.6.0
 mrt:external-file-loader@0.1.4
 mrt:underscore-string-latest@2.3.3
+iron:router
+
