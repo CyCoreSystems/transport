@@ -17,6 +17,7 @@ updateArrivals = ->
   _.each res.data,(i)->
     event_time = moment(i.EVENT_TIME).unix()
     next_arr = moment(i.NEXT_ARR,'hh:mm:ss A').unix()
+    console.log("Next arrival time processed as:",next_arr)
     Arrivals.update {
       train_id: i.TRAIN_ID
       station: i.STATION
