@@ -13,6 +13,7 @@ updateArrivals = ->
     return console.error "Failed to get train data",res
   if not _.isArray res.data
     return console.error "Got invalid train data",res
+  console.log "Update contains #{res.data.length} arrivals"
   _.each res.data,(i)->
     event_time = moment(i.EVENT_TIME).unix()
     next_arr = moment(i.NEXT_ARR,'hh:mm:ss A').unix()
