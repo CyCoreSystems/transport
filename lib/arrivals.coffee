@@ -7,6 +7,7 @@ if Meteor.isServer
     trainsInterval = Meteor.setInterval updateArrivals,10000
 
 updateArrivals = ->
+  console.log "Updating arrivals"
   res = HTTP.get "http://developer.itsmarta.com/RealtimeTrain/RestServiceNextTrain/GetRealtimeArrivals?apikey=#{share.api_key_MARTA}"
   if res.statusCode isnt 200
     return console.error "Failed to get train data",res
