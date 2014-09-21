@@ -34,6 +34,6 @@ updateArrivals = ->
         waiting_time: i.WAITING_TIME
     },{ upsert: true }
   # Empty out old data
-  Arrivals.remove {
-    next_arr: { $lt: moment().unix() }
-  }
+  #Arrivals.remove {
+  #  next_arr: { $lt: moment().unix() }
+  #}
